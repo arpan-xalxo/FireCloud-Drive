@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+    <title>Profile | Google Drive Clone</title>
+    <style>
+      .fade-in-scale {
+        animation: fadeInScale 0.7s cubic-bezier(0.4,0,0.2,1);
+      }
+      @keyframes fadeInScale {
+        from { opacity: 0; transform: scale(0.95) translateY(40px); }
+        to { opacity: 1; transform: scale(1) translateY(0); }
+      }
+    </style>
+  </head>
+  <body class="bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200 min-h-screen dark:bg-gradient-to-br dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center transition-colors duration-500">
+    <div id="toast" class="fixed top-6 right-6 z-50 hidden min-w-[220px] max-w-xs px-4 py-3 rounded-lg shadow-lg text-white text-sm font-semibold transition-all duration-300"></div>
+    <div class="w-full max-w-5xl bg-white dark:bg-gray-900 rounded-xl shadow-lg p-16 fade-in-scale">
+        <div class="flex justify-between items-center mb-6">
+          <h1 class="text-2xl font-bold text-blue-700 dark:text-blue-200">Profile</h1>
+          <a href="/home" class="bg-black text-white text-sm flex items-center gap-1 rounded px-4 py-2 shadow hover:bg-gray-900 hover:no-underline transition">
+            <i class="ri-arrow-left-s-line"></i> Dashboard
+          </a>
+        </div>
+        <div class="mb-6">
+          <div class="mb-2 text-gray-700 dark:text-gray-200 font-semibold">Username:</div>
+          <div class="mb-4 text-gray-900 dark:text-white"><%= user.username %></div>
+          <div class="mb-2 text-gray-700 dark:text-gray-200 font-semibold">Email:</div>
+          <div class="mb-4 text-gray-900 dark:text-white"><%= user.email %></div>
+        </div>
+        <div class="flex flex-col md:flex-row gap-8">
+          <div class="flex-1 bg-white dark:bg-gray-800 rounded-xl shadow p-8">
+            <form action="/profile/update" method="post" class="space-y-4">
+              <div class="text-lg font-semibold text-blue-700 dark:text-blue-200 mb-2">Update Info</div>
+              <div>
+                <label for="username" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">New Username</label>
+                <input type="text" id="username" name="username" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="New username" />
+              </div>
+              <div>
+                <label for="email" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">New Email</label>
+                <input type="email" id="email" name="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="New email" />
+              </div>
+              <button type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Update Info</button>
+            </form>
+          </div>
+          <div class="flex-1 bg-white dark:bg-gray-800 rounded-xl shadow p-8">
+            <form action="/profile/password" method="post" class="space-y-4">
+              <div class="text-lg font-semibold text-blue-700 dark:text-blue-200 mb-2">Change Password</div>
+              <div>
+                <label for="currentPassword" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Current Password</label>
+                <input type="password" id="currentPassword" name="currentPassword" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Current password" required />
+              </div>
+              <div>
+                <label for="newPassword" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">New Password</label>
+                <input type="password" id="newPassword" name="newPassword" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="New password" required />
+              </div>
+              <button type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Change Password</button>
+            </form>
+          </div>
+        </div>
+    </div>
+    <script>
+      function showToast(message, type = 'success') {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.className = 'fixed top-6 right-6 z-50 min-w-[220px] max-w-xs px-4 py-3 rounded-lg shadow-lg text-white text-sm font-semibold transition-all duration-300';
+        if (type === 'success') {
+          toast.classList.add('bg-green-600');
+        } else {
+          toast.classList.add('bg-red-600');
+        }
+        toast.classList.remove('hidden');
+        setTimeout(() => {
+          toast.classList.add('hidden');
+        }, 3500);
+      }
+    </script>
+    <% if (success && success.length > 0) { %>
+      <script>showToast("<%= success[0] %>", "success");</script>
+    <% } %>
+    <% if (error && error.length > 0) { %>
+      <script>showToast("<%= error[0] %>", "error");</script>
+    <% } %>
+  </body>
+</html> 

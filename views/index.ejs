@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Drive Clone</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(120deg, #f8fafc 0%, #e0e7ef 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: #fff;
+            padding: 2.5rem 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            text-align: center;
+            max-width: 400px;
+        }
+        h1 {
+            color: #2563eb;
+            margin-bottom: 0.5rem;
+        }
+        p {
+            color: #555;
+            margin-bottom: 2rem;
+        }
+        .nav-btns {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        .nav-btns a {
+            text-decoration: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            background: #2563eb;
+            color: #fff;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .nav-btns a:hover {
+            background: #1e40af;
+        }
+        @media (max-width: 500px) {
+            .container { padding: 1.5rem 0.5rem; }
+            h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Google Drive Clone</h1>
+        <p>A modern cloud storage app. Register or log in to start uploading and managing your files securely.</p>
+        <div class="nav-btns">
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+        </div>
+    </div>
+</body>
+</html>

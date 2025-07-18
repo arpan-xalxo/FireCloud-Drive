@@ -1,0 +1,255 @@
+<!doctype html>
+<html id="htmlRoot">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+    <title>Dashboard | FireCloud Drive </title>
+    <style>
+      .fade-in {
+        animation: fadeIn 0.6s cubic-bezier(0.4,0,0.2,1);
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: none; }
+      }
+      .pop-anim {
+        animation: popAnim 0.4s cubic-bezier(0.4,0,0.2,1);
+      }
+      @keyframes popAnim {
+        from { opacity: 0; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
+      }
+    </style>
+  </head>
+  <body class="bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200 min-h-screen dark:bg-gradient-to-br dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-500">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-blue-600 to-blue-400 dark:from-gray-800 dark:to-gray-700 shadow-lg py-6 px-4 flex flex-col sm:flex-row justify-between items-center rounded-b-3xl mb-8 transition-colors duration-500">
+      <div class="flex items-center gap-3">
+        <i class="ri-cloud-fill text-3xl text-white"></i>
+        <span class="text-2xl font-bold text-white tracking-wide">FireCloud Drive </span>
+      </div>
+      <div class="flex items-center gap-4 mt-4 sm:mt-0">
+          <% if (user) { %>
+            <div class="flex flex-col items-end gap-1">
+              <div class="flex items-center gap-2">
+                <div class="font-semibold text-white"><i class="ri-user-3-line"></i> <%= user.username %></div>
+                <a href="/profile" class="ml-2 px-3 py-1 border border-white text-white rounded hover:bg-white hover:text-blue-700 text-xs font-semibold transition">Profile</a>
+                <a href="/logout" class="ml-2 px-3 py-1 border border-white text-white rounded hover:bg-white hover:text-blue-700 text-xs font-semibold transition">Logout</a>
+              </div>
+              <div class="text-xs text-blue-100"><%= user.email %></div>
+            </div>
+          <% } %>
+      </div>
+    </header>
+    <main class="max-w-3xl mx-auto px-4">
+      <div id="toast" class="fixed top-6 right-6 z-50 hidden min-w-[220px] max-w-xs px-4 py-3 rounded-lg shadow-lg text-white text-sm font-semibold transition-all duration-300"></div>
+      <div class="flex justify-end mb-6">
+        <button 
+          onclick="showPopUp()"
+          class="bg-black hover:bg-gray-900 text-white font-bold py-2 px-5 rounded-lg shadow transition"
+        >
+          <i class="ri-upload-cloud-2-line mr-2"></i>Upload File
+        </button>
+      </div>
+      <% if (files.length > 0) { %>
+        <div class="flex flex-col sm:flex-row gap-4 mb-6">
+          <input id="fileSearch" type="text" placeholder="Search files..." class="flex-1 px-4 py-2 rounded bg-gray-100 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none border-none shadow-none" />
+          <select id="fileTypeFilter" class="w-40 px-4 py-2 rounded bg-gray-100 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none border-none shadow-none">
+            <option value="">All Types</option>
+            <option value="image/">Images</option>
+            <option value="application/pdf">PDFs</option>
+            <option value="video/">Videos</option>
+            <option value="audio/">Audio</option>
+            <option value="application/zip">ZIP</option>
+            <!-- Add more as needed -->
+          </select>
+        </div>
+      <% } %>
+      <!-- POPUP -->
+      <div class="pop hidden fixed top-0 left-0 z-50 h-screen w-screen flex items-center justify-center backdrop-blur bg-black/20">
+        <div class="relative bg-white dark:bg-gray-800 rounded-lg p-6 w-[30rem] max-w-full shadow-lg pop-anim">
+          <button
+            class="absolute top-4 right-4 text-gray-500 dark:text-gray-400 text-xl"
+            onclick="hidePopUp()"
+          >
+            <i class="ri-close-line"></i>
+          </button>
+          <form action="/upload" method="post" enctype="multipart/form-data" id="uploadForm">
+            <div class="flex items-center justify-center mb-4">
+              <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600 dark:hover:border-gray-500 transition-colors duration-300">
+                <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                  <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 20 16">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 
+                         5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 
+                         4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                  </svg>
+                  <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                    <span class="font-semibold">Click to upload</span> or drag and drop
+                  </p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG, GIF, PDF, ZIP, DOCX, etc.</p>
+                </div>
+                <input 
+                id="dropzone-file" 
+                type="file" 
+                class="hidden" 
+                name="file" />
+              </label>
+            </div>
+            <div id="selectedFileInfo" class="mb-4 hidden text-center">
+              <span class="inline-block bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200 px-3 py-1 rounded-lg text-sm font-medium">
+                <span id="selectedFileName"></span>
+                <span id="selectedFileSize" class="ml-2 text-xs text-gray-500 dark:text-gray-300"></span>
+              </span>
+            </div>
+            <button
+              type="submit"
+              class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow transition"
+            >
+              <i class="ri-upload-cloud-2-line mr-2"></i>Upload File
+            </button>
+          </form>
+        </div>
+      </div>
+      <% if (files.length === 0) { %>
+        <div class="files mt-6 flex flex-col gap-4">
+          <div class="text-center text-white-400 py-12 dark:text-gray-500 fade-in">
+            <i class="ri-folder-open-line text-5xl mb-2"></i>
+            <div>No files uploaded yet.</div>
+          </div>
+        </div>
+      <% } else { %>
+        <div class="files mt-6 flex flex-col gap-4">
+          <% files.forEach((file)=>{ %>
+          <div class="bg-white dark:bg-gray-800 rounded-xl shadow flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 p-4 hover:shadow-2xl transition border border-blue-100 dark:border-gray-700 fade-in file-card"
+               data-name="<%= file.originalname %>"
+               data-mimetype="<%= file.mimetype %>">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+              <% if (file.mimetype && file.mimetype.startsWith('image/') && file.signedUrl) { %>
+                <img src="<%= file.signedUrl %>" alt="preview" class="w-16 h-16 object-cover rounded shadow border border-gray-200 dark:border-gray-700 transition" />
+              <% } else if (file.mimetype === 'application/pdf' && file.signedUrl) { %>
+                <a href="<%= file.signedUrl %>" target="_blank" class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded text-xs font-semibold border border-yellow-400 hover:bg-yellow-200 dark:bg-yellow-900 dark:text-yellow-200 dark:border-yellow-700 dark:hover:bg-yellow-800 transition">Preview PDF</a>
+              <% } else { %>
+                <i class="ri-file-3-line text-3xl text-blue-400 dark:text-blue-200"></i>
+              <% } %>
+              <div>
+                <h1 class="font-medium text-blue-900 dark:text-blue-100"><%= file.originalname %></h1>
+                <div class="flex flex-wrap gap-3 mt-1">
+                  <span class="text-xs text-gray-600 dark:text-gray-300">
+                    <%= (file.size && !isNaN(file.size)) ? ((file.size >= 1048576) ? (file.size/1048576).toFixed(2) + ' MB' : (file.size/1024).toFixed(2) + ' KB') : 'Unknown size' %>
+                  </span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">
+                    Uploaded: <%= file.uploadDate ? new Date(file.uploadDate).toLocaleString() : 'Unknown date' %>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="flex gap-2 mt-2 sm:mt-0">
+              <a href="/download/<%= file.path %>"
+                class="px-3 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 font-semibold text-xs flex items-center gap-1 transition dark:bg-blue-900 dark:text-blue-200 dark:hover:bg-blue-800"
+                download="<%= file.originalname %>"
+                target="_blank"
+              >
+                <i class="ri-download-line"></i> Download
+              </a>
+              <form action="/delete/<%= file._id %>" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this file?');">
+                <button type="submit" class="px-3 py-1 border border-red-400 text-red-500 rounded hover:bg-red-500 hover:text-white text-xs font-semibold flex items-center gap-1 transition dark:border-red-700 dark:text-red-300 dark:hover:bg-red-700 dark:hover:text-white">
+                  <i class="ri-delete-bin-6-line"></i> Delete
+                </button>
+              </form>
+            </div>
+          </div>
+          <% }) %>
+        </div>
+      <% } %>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+    <script>
+      // Popup animation
+      function showPopUp() {
+        const pop = document.querySelector('.pop');
+        pop.classList.remove('hidden');
+        pop.querySelector('div').classList.add('pop-anim');
+      }
+      function hidePopUp() {
+        const pop = document.querySelector('.pop');
+        pop.classList.add('hidden');
+        pop.querySelector('div').classList.remove('pop-anim');
+      }
+      
+
+      const fileInput = document.getElementById('dropzone-file');
+      const selectedFileInfo = document.getElementById('selectedFileInfo');
+      const selectedFileName = document.getElementById('selectedFileName');
+      const selectedFileSize = document.getElementById('selectedFileSize');
+      if (fileInput) {
+        fileInput.addEventListener('change', function() {
+          if (fileInput.files && fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            selectedFileName.textContent = file.name;
+            let size = file.size;
+            let sizeStr = '';
+            if (size >= 1048576) {
+              sizeStr = (size/1048576).toFixed(2) + ' MB';
+            } else {
+              sizeStr = (size/1024).toFixed(2) + ' KB';
+            }
+            selectedFileSize.textContent = sizeStr;
+            selectedFileInfo.classList.remove('hidden');
+          } else {
+            selectedFileInfo.classList.add('hidden');
+            selectedFileName.textContent = '';
+            selectedFileSize.textContent = '';
+          }
+        });
+      }
+
+      function showToast(message, type = 'success') {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.className = 'fixed top-6 right-6 z-50 min-w-[220px] max-w-xs px-4 py-3 rounded-lg shadow-lg text-white text-sm font-semibold transition-all duration-300';
+        if (type === 'success') {
+          toast.classList.add('bg-green-600');
+        } else {
+          toast.classList.add('bg-red-600');
+        }
+        toast.classList.remove('hidden');
+        setTimeout(() => {
+          toast.classList.add('hidden');
+        }, 3500);
+      }
+    </script>
+    <% if (success && success.length > 0) { %>
+      <script>showToast("<%= success[0] %>", "success");</script>
+    <% } %>
+    <% if (error && error.length > 0) { %>
+      <script>showToast("<%= error[0] %>", "error");</script>
+    <% } %>
+    <script>
+      // Search & Filter
+      const searchInput = document.getElementById('fileSearch');
+      const typeFilter = document.getElementById('fileTypeFilter');
+      const fileCards = document.querySelectorAll('.file-card');
+
+      function filterFiles() {
+        const search = searchInput.value.toLowerCase();
+        const type = typeFilter.value;
+        fileCards.forEach(card => {
+          const name = card.getAttribute('data-name').toLowerCase();
+          const mimetype = card.getAttribute('data-mimetype');
+          const matchesName = name.includes(search);
+          const matchesType = !type || (type.endsWith('/') ? mimetype.startsWith(type) : mimetype === type);
+          card.style.display = (matchesName && matchesType) ? '' : 'none';
+        });
+      }
+
+      if (searchInput && typeFilter) {
+        searchInput.addEventListener('input', filterFiles);
+        typeFilter.addEventListener('change', filterFiles);
+      }
+    </script>
+  </body>
+</html>
