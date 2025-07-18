@@ -9,6 +9,13 @@ const upload = require('../config/multer.config')
 const fileModel = require('../models/files.models')
 const userModel = require('../models/user.model');
 
+
+
+
+router.get('/', (req, res) => {
+    res.redirect('/user/login');
+  });
+
 router.get('/home', authMiddleware, async (req,res)=>{
 
 
